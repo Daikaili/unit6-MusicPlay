@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.view.Menu;
+import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
@@ -55,21 +56,37 @@ public class MainActivity extends Activity {
 			// 启动后台Service
 		
 	}
+	public void onClick(View source) {
+
+		Intent intent = new Intent(CONTROL);
+		// 创建Intent
+		System.out.println(source.getId());
+		System.out.println(source.getId() == R.id.btnPlay);
+		switch (source.getId()) {
+		
+		case R.id.btnPlay:
+			intent.putExtra("control", 1);
+			break;
+			// 按下播放/暂停按钮
+		
+		case R.id.btnStop:
+			intent.putExtra("control", 2);
+			break;
+			// 按下停止按钮
+		}
+		
+		sendBroadcast(intent);
+		// 发送广播 ，将被Service组件中的BroadcastReceiver接收到
+	}
 	 public class ActivityReceiver extends BroadcastReceiver {
-
-
-
-
 
 			public void onReceive(Context context, Intent intent) {
 
-
-
-
-				// 获取Intent中的update消息，update代表播放状态，默认为-1
+			
 				int update = intent.getIntExtra("update", -1);
-				// 获取Intent中的current消息，current代表当前正在播放的歌曲，默认为-1
+				// 获取Intent中的update消息，update代表播放状态，默认为-1	
 				int current = intent.getIntExtra("current", -1);
+				// 获取Intent中的current消息，current代表当前正在播放的歌曲，默认为-1
 				if (current >= 0) {
 					tvTitle.setText(titleStrs[current]);
 					tvAuthor.setText(authorStrs[current]);
