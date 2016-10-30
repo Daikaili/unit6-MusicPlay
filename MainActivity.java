@@ -4,6 +4,8 @@ import android.os.Bundle;
 
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.view.Menu;
@@ -53,8 +55,47 @@ public class MainActivity extends Activity {
 			// 启动后台Service
 		
 	}
-	
+	 public class ActivityReceiver extends BroadcastReceiver {
 
+
+
+
+
+			public void onReceive(Context context, Intent intent) {
+
+
+
+
+				// 获取Intent中的update消息，update代表播放状态，默认为-1
+				int update = intent.getIntExtra("update", -1);
+				// 获取Intent中的current消息，current代表当前正在播放的歌曲，默认为-1
+				int current = intent.getIntExtra("current", -1);
+				if (current >= 0) {
+					tvTitle.setText(titleStrs[current]);
+					tvAuthor.setText(authorStrs[current]);
+				}
+				switch (update) {
+				case 0x11:
+					btnPlay.setBackgroundResource(R.drawable.stop);
+					status = 0x11;
+					break;
+				// 控制系统进入播放状态
+				case 0x12:
+					// 播放状态下设置使用暂停图标
+					btnPlay.setImageResource(R.drawable.pause);
+					// 设置当前状态
+					status = 0x12;
+					break;
+				// 控制系统进入暂停状态
+				case 0x13:
+					// 暂停状态下设置使用播放图标
+					btnPlay.setImageResource(R.drawable.play);
+					// 设置当前状态
+					status = 0x13;
+					break;
+				}
+			}
+	 }
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
         
